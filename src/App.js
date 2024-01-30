@@ -1,25 +1,35 @@
-import logo from './logo.svg';
-import './App.css';
+import Login from "./pages/login/Login";
+import {BrowserRouter, Route, Routes} from "react-router-dom";
+import Home from "./Home";
+import Book from "./pages/book/Book";
+import Section from "./pages/section/Section";
+import Quiz from "./pages/quiz/Quiz";
+import StoryScored from "./pages/story/StoryScored";
+import StoryUnscored from "./pages/story/StoryUnscored";
+import QuizHistoryReward from "./pages/quizhistory/QuizHistoryReward";
+import QuizUnReward from "./pages/quizhistory/QuizUnReward";
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    return (
+        <BrowserRouter>
+            <Routes>
+                <Route path='/' element={<Home/>}/>
+                <Route path='/login' element={<Login/>}/>
+                <Route path='/book' element={<Book/>}/>
+                <Route path='/section/by-book-id/:bookId' element={<Section/>}/>
+                <Route path='/quiz/by-book-id/:bookId' element={<Quiz/>}/>
+                <Route path="/story/scored" element={<StoryScored/>}/>
+                <Route path="/story/unscored" element={<StoryUnscored/>}/>
+                <Route path="/quiz-history/rewarded" element={<QuizHistoryReward/>}/>
+                <Route path="/quiz-history/un-rewarded" element={<QuizUnReward/>}/>
+                {/*<Route path="/post2" element={<PostPageLoad/>}/>*/}
+                {/*<Route path="/login" element={<Login/>}/>*/}
+                {/*<Route path="/cabinet" element={<Cabinet/>}/>*/}
+                {/*<Route path="/book/:id" element={<OneBookDetail/>}/>*/}
+                {/*<Route path="*" element={<NotFound404/>}/>*/}
+            </Routes>
+        </BrowserRouter>
+    );
 }
 
 export default App;
