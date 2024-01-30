@@ -1,10 +1,11 @@
 import React, {useEffect, useState} from 'react';
 import NavBar from "../../components/NavBar";
 import {Button, Container} from "reactstrap";
-import './Story.css'
 import {POST, PUT} from "../api/API";
 import {Checkbox} from "@mui/material";
 import {Link} from "react-router-dom";
+import vb from './psy.mp4'
+import './AAA.css'
 
 function StoryScored() {
     const [stories, setStories] = useState([
@@ -68,9 +69,15 @@ function StoryScored() {
     return (
         <>
             <NavBar title={'Stories'}/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <video width="100%" height="100%" src={vb} type="video/mp4" loop muted controls autoPlay>
+            </video>
             <Container className={'container p-5 rounded-5'}>
                 <div className={'hhh d-flex justify-content-between align-items-center'}>
-                    <h1 className={'text-success'}>Scored</h1>
+                <h1 className={'text-success'}>Scored</h1>
                     <Link to={'/story/unscored'}>To Unscored</Link>
                 </div>
                 {stories.map(story =>

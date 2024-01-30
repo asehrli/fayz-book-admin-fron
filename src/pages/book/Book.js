@@ -63,10 +63,7 @@ function Book() {
     const changeActivity = (item) => {
         PATCH(BASE_PATH + '/change-activity/' + item.id, {})
             .then(res => {
-                if (res.data) {
-                    item.isActive = !item.isActive;
-                    setItems(items)
-                }
+                showAll()
             })
     }
 
@@ -128,14 +125,10 @@ function Book() {
                         <td>{item.title}</td>
                         <td>
                             <div className="form-check form-switch">
-                                {item.isActive ? <input className="form-check-input shadow"
-                                                        type="checkbox" checked
-                                                        onClick={() => changeActivity(item)}
-                                                        id="flexSwitchCheckDefault"/> :
-                                    <input className="form-check-input shadow"
-                                           type="checkbox"
-                                           onClick={() => changeActivity(item)}
-                                           id="flexSwitchCheckDefault"/>}
+                                {<input className="form-check-input shadow"
+                                        type="checkbox" checked={item.isActive}
+                                        onClick={() => changeActivity(item)}
+                                        id="flexSwitchCheckDefault"/>}
                             </div>
                         </td>
                         <td>

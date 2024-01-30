@@ -18,7 +18,7 @@ function Quiz(props) {
     const [book, setBook] = useState({})
 
     const [name, setName] = useState('')
-    const [price, setPrice] = useState('')
+    const [price, setPrice] = useState(0)
     const [rightAnswer, setRightAnswer] = useState('')
     const [wrongAnswer1, setWrongAnswer1] = useState('')
     const [wrongAnswer2, setWrongAnswer2] = useState('')
@@ -51,6 +51,7 @@ function Quiz(props) {
     const showAll = () => {
         GET(GET_PATH).then(res => {
             setItems(res.data)
+            console.log(res.data)
         })
 
         GET('/book/' + bookId).then(res => setBook(res.data))
@@ -62,7 +63,7 @@ function Quiz(props) {
                 name: name,
                 price: price,
                 bookId: bookId,
-                answerDTOList: [
+                answerList: [
                     {
                         name: rightAnswer,
                         correct: true,
@@ -83,13 +84,14 @@ function Quiz(props) {
             }).then(res => {
                 items.push(res.data)
                 setItems(items)
+                showAll()
             }).catch(err => console.log(err))
         } else {
-            PUT(BASE_PATH + '/' + id, {
+            let putObj = {
                 name: name,
                 price: price,
                 bookId: bookId,
-                answerDTOList: [
+                answerList: [
                     {
                         name: rightAnswer,
                         correct: true,
@@ -107,7 +109,14 @@ function Quiz(props) {
                         correct: false
                     }
                 ]
-            }).then(res => showAll())
+            }
+            console.log(putObj)
+            PUT(BASE_PATH + '/' + id, putObj).then(res => {
+                console.log('AA')
+                showAll()
+            }).catch(err => {
+                console.log(err)
+            })
         }
 
         closeModal()
@@ -117,26 +126,44 @@ function Quiz(props) {
 
 
     const showEditModal = (item) => {
+        console.log(item)
         setName(item.name);
         setPrice(item.price)
 
         let rai = -1;
-        for (let i = 0; i < item.answerDTOList.length; i++) {
-            if (item.answerDTOList[i].correct) {
-                setRightAnswer(item.answerDTOList[i])
-                rai = i;
+        let index = -1;
+        for (let i of item.answerList) {
+            index++;
+            if (i?.correct) {
+                setRightAnswer(i.name)
+                rai = index;
             }
         }
 
-        let i = 0;
-        if (rai === i) i++;
-        setWrongAnswer1(item.answerDTOList[i])
+        if (rai === 0) {
+            setWrongAnswer1(item.answerList[1].name)
+            setWrongAnswer2(item.answerList[2].name)
+            setWrongAnswer3(item.answerList[3].name)
+        }
 
-        if (rai === i) i++;
-        setWrongAnswer2(item.answerDTOList[i])
+        if (rai === 1) {
+            setWrongAnswer1(item.answerList[0].name)
+            setWrongAnswer2(item.answerList[2].name)
+            setWrongAnswer3(item.answerList[3].name)
+        }
 
-        if (rai === i) i++;
-        setWrongAnswer3(item.answerDTOList[i])
+        if (rai === 2) {
+            setWrongAnswer1(item.answerList[1].name)
+            setWrongAnswer2(item.answerList[0].name)
+            setWrongAnswer3(item.answerList[3].name)
+        }
+
+        if (rai === 3) {
+            setWrongAnswer1(item.answerList[1].name)
+            setWrongAnswer2(item.answerList[2].name)
+            setWrongAnswer3(item.answerList[0].name)
+        }
+
 
         setModalTitle('Edit Quiz')
         setId(item.id)
@@ -161,7 +188,7 @@ function Quiz(props) {
                             <input value={id} type="text" hidden/>
                             <input placeholder={'name'} value={name} className={'form-control'} type="text"
                                    onChange={setNameValue}/>
-                            <input placeholder={'price'} value={price} className={'form-control'} type="text"
+                            <input placeholder={'price'} value={price} className={'form-control'} type="number"
                                    onChange={setPriceValue}/>
 
                             <input placeholder={'right answer'} value={rightAnswer} className={'form-control'}
@@ -198,7 +225,7 @@ function Quiz(props) {
                         <th>Id / Index</th>
                         <th>Name</th>
                         <th>Price</th>
-                        <th>Answers</th>
+                        <th className={'w-25'}>Answers</th>
                         <th>Actions</th>
                     </tr>
                     </thead>
@@ -208,7 +235,7 @@ function Quiz(props) {
                         <td>{item.name}</td>
                         <td>{item.price}</td>
                         <td><select className={'form-control'}>
-                            {item.answers.map(item => <option>{item.name} {item.correct ? '✅' : '❌'}</option>)}
+                            {item.answerList?.map(item => <option>{item.name} {item.correct ? '✅' : '❌'}</option>)}
                         </select></td>
                         <td className={'d-flex gap-3'}>
                             <Button onClick={() => showEditModal(item)} color={'warning'}>Edit</Button>

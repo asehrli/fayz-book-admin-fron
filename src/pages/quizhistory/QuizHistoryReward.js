@@ -49,6 +49,7 @@ function QuizHistoryReward() {
             <NavBar title={'Quiz History'}/>
             <Container className={'container p-5 rounded-5'}>
                 {quizHistories.map(item =>
+
                     <div className="story my-5">
                         <div
                             className="story-header p-2 bg-success text-white d-flex align-items-center justify-content-around">
@@ -65,6 +66,7 @@ function QuizHistoryReward() {
                             <br/>
                             <b>Total price: </b>{item.totalPrice}
                         </div>
+
                     </div>
                 )}
             </Container>

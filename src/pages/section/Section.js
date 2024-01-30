@@ -43,6 +43,7 @@ function Section(props) {
             POST(BASE_PATH, {name: name, bookId: bookId}).then(res => {
                 items.push(res.data)
                 setItems(items)
+                showAll()
             }).catch(err => console.log(err))
         } else {
             PUT(BASE_PATH + '/' + id, {name: name, bookId: bookId})

@@ -1,38 +1,11 @@
 import React, {useEffect, useState} from 'react';
 import NavBar from "../../components/NavBar";
 import {Button, Container} from "reactstrap";
-import './Story.css'
 import {POST, PUT} from "../api/API";
 import {Link} from "react-router-dom";
 
 function StoryUnscored() {
-    const [stories, setStories] = useState([
-        // {
-        //     id: 0,
-        //     body: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Amet aut autem culpa debitis inventore iusto laborum nam nemo, porro ratione repudiandae sequi tenetur veritatis voluptatem voluptatibus. Eveniet ex Lorem ipsum dolor sit amet, consectetur adipisicing elit. Amet aut autem culpa debitis inventore iusto laborum nam nemo, porro ratione repudiandae sequi tenetur veritatis voluptatem voluptatibus. Eveniet    facilis libero veritatis. Enim ex maxime nam neque perferendis sit voluptate! Nihil.",
-        //     // score: null,
-        //     sectionDTO: {
-        //         id: 0,
-        //         name: 'lanati section',
-        //         book: {
-        //             id: 0,
-        //             title: 'jin ursin book da author yo`q aldama blin',
-        //             isActive: true
-        //         }
-        //     },
-        //     userDTO: {
-        //         id: 0,
-        //         chatId: 1,
-        //         firstName: 'Firstname',
-        //         lastName: 'Lastname',
-        //         phoneNumber: '+998 77 777 77 77',
-        //         age: 20,
-        //         teacherName: 'Alisher',
-        //         school: 43,
-        //         classNumber: 99
-        //     }
-        // }
-    ])
+    const [stories, setStories] = useState()
 
     const [score, setScore] = useState(-1)
 
@@ -49,13 +22,8 @@ function StoryUnscored() {
     }
 
     const giveBall = (storyId) => {
-        console.log(storyId)
-        console.log(score)
         PUT("/story/" + storyId + '?score=' + score)
-            .then(res => {
-                showAll()
-                console.log(res)
-            }).catch(err => console.log(err))
+            .then(res => showAll()).catch(err => console.log(err))
     }
 
     const BASE_PATH = '/story'
@@ -71,7 +39,7 @@ function StoryUnscored() {
                 {stories.map(story =>
                     <div className="story my-5">
                         <div
-                            className="story-header p-2 bg-success text-white d-flex align-items-center justify-content-around">
+                            className="story-header p-2 text-white d-flex align-items-center justify-content-around">
                             <div className="story-user d-flex gap-4">
                                 {/*{JSON.stringify(story.userDTO)}*/}
                                 <h5>{story.userDTO.firstName}</h5>
