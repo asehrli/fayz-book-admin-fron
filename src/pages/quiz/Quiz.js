@@ -4,6 +4,9 @@ import './Quiz.css'
 import NavBar from "../../components/NavBar";
 import {Button, Container, Table} from "reactstrap";
 import {DELETE, GET, POST, PUT} from "../api/API";
+import {ToastContainer, toast} from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 
 function Quiz(props) {
@@ -52,9 +55,11 @@ function Quiz(props) {
         GET(GET_PATH).then(res => {
             setItems(res.data)
             console.log(res.data)
-        })
+        }).catch(err => toast(err.message))
 
-        GET('/book/' + bookId).then(res => setBook(res.data))
+        GET('/book/' + bookId)
+            .then(res => setBook(res.data))
+            .catch(err => toast(err.message))
     }
 
     const save = () => {
@@ -85,7 +90,7 @@ function Quiz(props) {
                 items.push(res.data)
                 setItems(items)
                 showAll()
-            }).catch(err => console.log(err))
+            }).catch(err => toast(err.message))
         } else {
             let putObj = {
                 name: name,
@@ -114,9 +119,7 @@ function Quiz(props) {
             PUT(BASE_PATH + '/' + id, putObj).then(res => {
                 console.log('AA')
                 showAll()
-            }).catch(err => {
-                console.log(err)
-            })
+            }).catch(err => toast(err.message))
         }
 
         closeModal()
@@ -173,12 +176,13 @@ function Quiz(props) {
     const remove = (item) => {
         DELETE(BASE_PATH.concat(`/${item.id}`))
             .then(res => showAll())
+            .catch(err => toast(err.message))
     }
 
     return (
         <>
             <NavBar title={'Quiz Page'}/>
-
+            <ToastContainer/>
             <div className={'my-modal ' + dNone}>
                 <Container className={'container shadow p-5 rounded-5 w-50'}>
                     <h1 className="title text-success text-center">{modalTitle}</h1>

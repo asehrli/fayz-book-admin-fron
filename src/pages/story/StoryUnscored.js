@@ -2,12 +2,21 @@ import React, {useEffect, useState} from 'react';
 import NavBar from "../../components/NavBar";
 import {Button, Container} from "reactstrap";
 import {POST, PUT} from "../api/API";
-import {Link} from "react-router-dom";
+import './Scored.css'
+import {Link, useNavigate} from "react-router-dom";
+import {ToastContainer, toast} from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 function StoryUnscored() {
     const [stories, setStories] = useState()
 
+    const navigatator = useNavigate()
+
     const [score, setScore] = useState(-1)
+    const [dNone, setDNone] = useState('d-none')
+    const [history, setHistory] = useState('')
+
 
     useEffect(() => {
         showAll()
@@ -18,55 +27,76 @@ function StoryUnscored() {
             .then(res => {
                 setStories(res.data)
             })
-            .catch(err => console.log(err))
+            .catch(err => toast(err.message))
     }
 
     const giveBall = (storyId) => {
-        PUT("/story/" + storyId + '?score=' + score)
-            .then(res => showAll()).catch(err => console.log(err))
+        if (score > 0) {
+            PUT("/story/" + storyId + '?score=' + score)
+                .then(res => {
+                    setScore(-1)
+                    showAll()
+                }).catch(err => toast(err.message))
+        }
     }
 
     const BASE_PATH = '/story'
+    const closeModal = () => setDNone('d-none')
+
 
     return (
         <>
             <NavBar title={'Stories'}/>
-            <Container className={'container p-5 rounded-5'}>
-                <div className={'hhh d-flex justify-content-between align-items-center'}>
-                    <h1 className={'text-success'}>Unscored</h1>
-                    <Link to={'/story/scored'}>To Scored</Link>
+            <ToastContainer/>
+            <div className={'my-modal ' + dNone}>
+                <div className={'shadow rounded-5 w-50'}>
+                    <h1 className="title text-success text-center">History</h1>
+                    <p>
+                        {history}
+                    </p>
+                    <Button onClick={closeModal} type={'button'} color={'danger'}
+                            className={'cls-btn'}>Close</Button>
                 </div>
-                {stories.map(story =>
-                    <div className="story my-5">
-                        <div
-                            className="story-header p-2 text-white d-flex align-items-center justify-content-around">
-                            <div className="story-user d-flex gap-4">
-                                {/*{JSON.stringify(story.userDTO)}*/}
-                                <h5>{story.userDTO.firstName}</h5>
-                                <h5>{story.userDTO.lastName}</h5>
-                                <h5>{story.userDTO.phoneNumber}</h5>
-                            </div>
-                            <div className="story-book">
-                                <h5><b>Section: </b>{story.sectionDTO.name}</h5>
-                                <h5><b>Book: </b>{story.sectionDTO.book.title}</h5>
-                            </div>
-                        </div>
-                        <div className="story-body p-2 text-dark fs-5">
-                            {story.body}
-                            {/*<br/>*/}
-                            {/*{story.score ? 'A' : 'B'}*/}
-                        </div>
-                        <div className="story-footer p-2 d-flex justify-content-end gap-3">
-                            <input type="text"
-                                   onChange={(e) => setScore(e.target.value)}
-                                   className={'form-control w-auto'}
-                                   placeholder={'enter score'}/>
-                            <Button color={'success'} onClick={() => giveBall(story.id)}>Save
-                            </Button>
-                        </div>
-                    </div>
-                )}
-            </Container>
+            </div>
+
+            <div className={'w-100 p-5 rounded-5'}>
+                <table className={'table table-secondary table-hover table-striped'}>
+                    <thead>
+                    <tr>
+                        <th>Num</th>
+                        <th>User</th>
+                        {/*<th>Phone</th>*/}
+                        <th>Book</th>
+                        <th>Section</th>
+                        <th>History</th>
+                        <th>Action</th>
+                    </tr>
+
+                    </thead>
+                    <tbody>
+                    {stories?.map((story, index) => <tr>
+                        <td>{index + 1}</td>
+                        <td>
+                            <Link to={'/users/' + story.userDTO.chatId}>{story.userDTO.firstName} {story.userDTO.lastName}</Link>
+                        </td>
+                        {/*<td>{story.userDTO.phoneNumber}</td>*/}
+                        {/*<td>{story.sectionDTO.book.title}</td>*/}
+                        <td>{story.sectionDTO.book.title.length > 36 ? story.sectionDTO.book.title.substring(0, 33) + '...' : story.sectionDTO.book.title}</td>
+                        <td>{story.sectionDTO.name}</td>
+                        <td><Button onClick={() => {
+                            setDNone('')
+                            setHistory(story.body)
+                        }} color={'info'} className={'m-0'}>Show_History</Button></td>
+                        <td className={'d-flex m-0'}>
+                            <input onChange={(e) => setScore(e.target.value)} type="number"
+                                   className={'form-control rounded-0 m-0'}/>
+                            <Button onClick={() => giveBall(story.id)} color={'dark'}
+                                    className={'rounded-0 m-0 w-50'}>Give_Ball</Button>
+                        </td>
+                    </tr>)}
+                    </tbody>
+                </table>
+            </div>
         </>
     );
 }

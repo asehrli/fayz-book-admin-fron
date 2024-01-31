@@ -8,6 +8,8 @@ import StoryScored from "./pages/story/StoryScored";
 import StoryUnscored from "./pages/story/StoryUnscored";
 import QuizHistoryReward from "./pages/quizhistory/QuizHistoryReward";
 import QuizUnReward from "./pages/quizhistory/QuizUnReward";
+import User from "./pages/user/User";
+import OneUser from "./pages/user/OneUser";
 
 function App() {
     return (
@@ -22,6 +24,8 @@ function App() {
                 <Route path="/story/unscored" element={<StoryUnscored/>}/>
                 <Route path="/quiz-history/rewarded" element={<QuizHistoryReward/>}/>
                 <Route path="/quiz-history/un-rewarded" element={<QuizUnReward/>}/>
+                <Route path="/users" element={<User/>}/>
+                <Route path="/users/:userId" element={<OneUser/>}/>
                 {/*<Route path="/post2" element={<PostPageLoad/>}/>*/}
                 {/*<Route path="/login" element={<Login/>}/>*/}
                 {/*<Route path="/cabinet" element={<Cabinet/>}/>*/}

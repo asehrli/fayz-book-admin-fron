@@ -4,6 +4,9 @@ import './Section.css'
 import NavBar from "../../components/NavBar";
 import {Button, Container, Table} from "reactstrap";
 import {DELETE, GET, POST, PUT} from "../api/API";
+import {ToastContainer, toast} from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 
 function Section(props) {
@@ -33,9 +36,10 @@ function Section(props) {
     const showAll = () => {
         GET(GET_PATH).then(res => {
             setItems(res.data)
-        })
+        }).catch(err => toast(err.message))
 
         GET('/book/' + bookId).then(res => setBook(res.data))
+            .catch(err => toast(err.message))
     }
 
     const save = () => {
@@ -44,12 +48,12 @@ function Section(props) {
                 items.push(res.data)
                 setItems(items)
                 showAll()
-            }).catch(err => console.log(err))
+            }).catch(err => toast(err.message))
         } else {
             PUT(BASE_PATH + '/' + id, {name: name, bookId: bookId})
                 .then(res => {
                     showAll()
-                })
+                }).catch(err => toast(err.message))
         }
 
         closeModal()
@@ -68,12 +72,13 @@ function Section(props) {
     const remove = (item) => {
         DELETE(BASE_PATH.concat(`/${item.id}`))
             .then(res => showAll())
+            .catch(err => toast(err.message))
     }
 
     return (
         <>
             <NavBar title={'Section Page'}/>
-
+            <ToastContainer/>
             <div className={'my-modal ' + dNone}>
                 <Container className={'container shadow p-5 rounded-5 w-50'}>
                     <h1 className="title text-success text-center">{modalTitle}</h1>

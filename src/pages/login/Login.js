@@ -1,13 +1,14 @@
 import React, {useState} from 'react';
-import {MDBContainer, MDBCol, MDBRow, MDBBtn, MDBIcon, MDBInput, MDBCheckbox} from 'mdb-react-ui-kit';
+import {MDBBtn, MDBCol, MDBContainer, MDBIcon, MDBInput, MDBRow} from 'mdb-react-ui-kit';
 
 import 'mdb-react-ui-kit/dist/css/mdb.min.css';
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import {Container} from "reactstrap";
-import axios from "axios";
 import {useNavigate} from 'react-router-dom'
 import {POST} from "../api/API";
-import {BASE_URL} from "../config/Auth";
+import {ToastContainer, toast} from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 function Login() {
 
@@ -24,12 +25,13 @@ function Login() {
             localStorage.setItem('access-token', res.data.accessToken)
             localStorage.setItem('refresh-token', res.data.refreshToken)
             navigate('/book')
-        }).catch(err => console.error(err));
+        }).catch(err => toast(err.message))
     }
 
     return (
         <MDBContainer fluid className="p-3 my-5 h-custom">
 
+            <ToastContainer/>
             <MDBRow>
 
                 <MDBCol col='10' md='6'>
@@ -40,7 +42,8 @@ function Login() {
                 <MDBCol col='4' md='4' className={'ms-5 d-flex justify-content-center align-items-center'}>
                     <Container>
 
-                        <MDBInput onChange={(ev) => setUsername(ev.target.value)} wrapperClass='mb-4' label='Username'
+                        <MDBInput onChange={(ev) => setUsername(ev.target.value)}
+                                  wrapperClass='mb-4' label='Username'
                                   id='formControlLg' type='text' size="lg"/>
                         <MDBInput onChange={(ev) => setPassword(ev.target.value)} wrapperClass='mb-4' label='Password'
                                   id='formControlLg' type='password' size="lg"/>

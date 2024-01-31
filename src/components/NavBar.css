@@ -1,7 +1,8 @@
 header {
     height: 10vh;
-    position: fixed;
-    top:0;
+    /*position: fixed;*/
+    top: 0;
+    background-color: #ffffff;
 }
 
 .logo {
@@ -13,32 +14,53 @@ img {
     height: 100%;
 }
 
+.menu-open {
+    position: relative;
+    height: 3rem;
+    right: -3rem;
+}
+
+.menu-icon {
+    position: absolute;
+    right: 4px;
+    padding: 4px;
+}
+
+.line {
+    width: 2rem;
+    height: .3rem;
+    background-color: #6fe7bd;
+    margin-bottom: .4rem;
+    border-radius: 1rem;
+}
+
+.line1 {
+    transition: .3s ease;
+}
+
+.line2, .line2 {
+    transition: .7s ease;
+}
+
 .links {
-    padding: 0;
-    margin-top: 1.8rem;
-    height: 2.4rem;
-    overflow: hidden;
-    transition: .4s;
-    margin-left: 1rem;
-    z-index: 999;
-    background-color: lime;
-    border-radius: .6rem;
+    transition: 1s ease;
 }
 
-.links:hover {
-    border-radius: 0;
-    height: 18.8rem;
-    margin-top: 18rem;
-    box-shadow: 0 0 4rem .4rem rgba(0, 0, 0, 0.44);
+menu {
+    height: 90vh;
+    width: 15rem;
+    left: -15rem;
+    transition: .4s ease-out;
+    z-index: 5;
 }
 
-.links .menu-link {
-    padding: 0 .4rem;
-    height: 2.4rem;
-    background-color: lime;
+
+menu ul .menu-link {
+    height: 3rem;
+    width: 12rem;
+    padding-left: 1rem;
 }
 
-.links .menu-link:hover {
-    background-color: green;
-    color: #eeeeee;
+menu ul .menu-link:hover {
+    background-color: #6fe7bd;
 }

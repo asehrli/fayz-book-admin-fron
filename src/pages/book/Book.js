@@ -4,6 +4,8 @@ import './Book.css'
 import NavBar from "../../components/NavBar";
 import {Button, Col, Container, Table} from "reactstrap";
 import {DELETE, GET, PATCH, POST, PUT} from "../api/API";
+import {ToastContainer, toast} from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 
 function Book() {
@@ -15,6 +17,8 @@ function Book() {
     const [id, setId] = useState(-1)
     const [modalTitle, setModalTitle] = useState('Add Book')
     const [dNone, setDNone] = useState('d-none')
+
+    const notify = () => toast("Wow so easy!");
 
     // functions
     const setTitleValue = (e) => setTitle(e.target.value)
@@ -32,7 +36,7 @@ function Book() {
     const showAll = () => {
         GET(BASE_PATH).then(res => {
             setItems(res.data)
-        })
+        }).catch(err => toast(err.message))
     }
 
     const save = () => {
@@ -41,7 +45,7 @@ function Book() {
                 items.push(res.data)
                 setItems(items)
                 closeModal()
-            }).catch(err => console.log(err))
+            }).catch(err => toast(err.message))
         } else {
             edit()
         }
@@ -56,7 +60,7 @@ function Book() {
         }).then(res => {
             showAll()
             closeModal()
-        })
+        }).catch(err => toast(err.message))
     }
 
 
@@ -64,7 +68,7 @@ function Book() {
         PATCH(BASE_PATH + '/change-activity/' + item.id, {})
             .then(res => {
                 showAll()
-            })
+            }).catch(err => toast(err.message))
     }
 
     const showEditModal = (item) => {
@@ -78,14 +82,19 @@ function Book() {
     const remove = (item) => {
         DELETE(BASE_PATH.concat(`/${item.id}`))
             .then(res => showAll())
+            .catch(err => {
+                toast('Bu kitob boshqa joylarda foydalanilmoqda!\nUni faolsizlantirib qo`yishingiz mumkin')
+           })
     }
 
     return (
         <>
             <NavBar title={'Book Page'}/>
+            {/*<button onClick={notify}>Notify!</button>*/}
+            <ToastContainer/>
 
             <div className={'my-modal ' + dNone}>
-                <Container className={'container shadow p-5 rounded-5 w-50'}>
+                <Container className={'shadow rounded-5 w-50'}>
                     <h1 className="title text-success text-center">{modalTitle}</h1>
                     <form className={'d-grid gap-2'}>
                         <br/>
@@ -106,8 +115,9 @@ function Book() {
                 </Container>
             </div>
 
-            <Container className={'container'}>
-                <Button color={'success'} onClick={showAddModal} className={'save-btn my-2 shadow-5-strong'}>Add
+            <div className={'p-5 w-100'}>
+                <Button color={'success'} onClick={showAddModal}
+                        className={'save-btn my-2 shadow-5-strong'}>Add
                     Book</Button>
                 <Table className={'table table-hover table-striped'}>
                     <thead>
@@ -145,7 +155,7 @@ function Book() {
                     </tr>)}
                     </tbody>
                 </Table>
-            </Container>
+            </div>
         </>
     );
 }

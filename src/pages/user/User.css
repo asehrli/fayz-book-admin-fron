@@ -1,0 +1,9 @@
+.user-logo {
+    width: 200px;
+    height: 200px;
+}
+
+.more-info {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+}
