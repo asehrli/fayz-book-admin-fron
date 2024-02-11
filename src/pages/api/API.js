@@ -1,10 +1,12 @@
 import axios from "axios";
 import {auth, BASE_URL} from "../config/Auth";
+import {useNavigate} from "react-router-dom";
 
 export const GET = async (path) => {
+
     return await axios
         .get(BASE_URL.concat(path), auth())
-        .then(response => response.data)
+        .then(response => response.data);
 }
 
 export const POST = async (path, data) => {

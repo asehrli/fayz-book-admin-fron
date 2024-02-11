@@ -115,9 +115,10 @@ function Quiz(props) {
                     }
                 ]
             }
+            console.log('dfghjkl')
             console.log(putObj)
             PUT(BASE_PATH + '/' + id, putObj).then(res => {
-                console.log('AA')
+                console.log(res)
                 showAll()
             }).catch(err => toast(err.message))
         }

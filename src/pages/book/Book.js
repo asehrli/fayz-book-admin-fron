@@ -1,42 +1,66 @@
 import React, {useEffect, useState} from 'react';
-import {Link} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import './Book.css'
 import NavBar from "../../components/NavBar";
-import {Button, Col, Container, Table} from "reactstrap";
+import {Button, Col, FormGroup, Input, Label, Modal, ModalBody, ModalFooter, ModalHeader, Table} from "reactstrap";
 import {DELETE, GET, PATCH, POST, PUT} from "../api/API";
-import {ToastContainer, toast} from 'react-toastify';
+import {toast, ToastContainer} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 
 function Book() {
+    const [modal, setModal] = useState(false);
+    const toggle = () => setModal(!modal);
+
     // constants
     const [items, setItems] = useState([])
     const BASE_PATH = '/book'
     const [title, setTitle] = useState('')
+    const [titleErr, setTitleErr] = useState('')
     const [author, setAuthor] = useState('')
+    const [authorErr, setAuthorErr] = useState('')
     const [id, setId] = useState(-1)
     const [modalTitle, setModalTitle] = useState('Add Book')
     const [dNone, setDNone] = useState('d-none')
+    const navigate = useNavigate();
 
     const notify = () => toast("Wow so easy!");
 
     // functions
-    const setTitleValue = (e) => setTitle(e.target.value)
-    const setAuthorValue = (e) => setAuthor(e.target.value)
+    const setTitleValue = (e) => {
+        setTitleErr('')
+        setTitle(e.target.value)
+    }
+    const setAuthorValue = (e) => {
+        setAuthorErr('')
+        setAuthor(e.target.value)
+    }
     const showAddModal = () => {
         setTitle('')
         setAuthor('')
-        setModalTitle('Add Book')
+        setModalTitle('Kitob qo\'shish')
         setDNone('')
         setId(-1)
+        setTitleErr('')
+        setAuthorErr('')
+        toggle()
     }
-    const closeModal = () => setDNone('d-none')
+    const closeModal = () => toggle()
 
     // api
     const showAll = () => {
         GET(BASE_PATH).then(res => {
             setItems(res.data)
-        }).catch(err => toast(err.message))
+        }).catch(err => {
+            navigateLoginIfForbidden(err)
+            toast(err.message)
+        })
+    }
+
+    const navigateLoginIfForbidden = (err) => {
+        if (err.response.status === 403) {
+            navigate('/login')
+        }
     }
 
     const save = () => {
@@ -45,7 +69,23 @@ function Book() {
                 items.push(res.data)
                 setItems(items)
                 closeModal()
-            }).catch(err => toast(err.message))
+            }).catch(err => {
+                navigateLoginIfForbidden(err)
+
+                if (err.response.status === 400) {
+                    for (let myErr of err.response.data.errors) {
+                        console.log(myErr)
+                        if (myErr.field === 'author') {
+                            setAuthorErr(myErr.msg)
+                        }
+                        if (myErr.field === 'title') {
+                            setTitleErr(myErr.msg)
+                        }
+                    }
+                } else {
+                    toast(err.message)
+                }
+            })
         } else {
             edit()
         }
@@ -60,7 +100,23 @@ function Book() {
         }).then(res => {
             showAll()
             closeModal()
-        }).catch(err => toast(err.message))
+        }).catch(err => {
+            navigateLoginIfForbidden(err)
+
+            if (err.response.status === 400) {
+                for (let myErr of err.response.data.errors) {
+                    console.log(myErr)
+                    if (myErr.field === 'author') {
+                        setAuthorErr(myErr.msg)
+                    }
+                    if (myErr.field === 'title') {
+                        setTitleErr(myErr.msg)
+                    }
+                }
+            } else {
+                toast(err.message)
+            }
+        })
     }
 
 
@@ -68,65 +124,76 @@ function Book() {
         PATCH(BASE_PATH + '/change-activity/' + item.id, {})
             .then(res => {
                 showAll()
-            }).catch(err => toast(err.message))
+            })
+            .catch(err => {
+                navigateLoginIfForbidden(err)
+                toast(err.message)
+            })
     }
 
     const showEditModal = (item) => {
         setTitle(item.title.substring(0, item.title.indexOf('(')));
         setAuthor(item.title.substring(item.title.indexOf('(') + 1, item.title.lastIndexOf(')')))
-        setModalTitle('Edit Book')
+        setModalTitle(`Kitobni tahrirlash`)
         setId(item.id)
         setDNone('')
+        toggle()
     };
 
     const remove = (item) => {
         DELETE(BASE_PATH.concat(`/${item.id}`))
             .then(res => showAll())
             .catch(err => {
-                toast('Bu kitob boshqa joylarda foydalanilmoqda!\nUni faolsizlantirib qo`yishingiz mumkin')
-           })
+                navigateLoginIfForbidden(err)
+                toast(err.response.data.errors[0].msg)
+            })
     }
 
     return (
         <>
-            <NavBar title={'Book Page'}/>
-            {/*<button onClick={notify}>Notify!</button>*/}
+            <NavBar title={'Kitoblar'}/>
             <ToastContainer/>
 
-            <div className={'my-modal ' + dNone}>
-                <Container className={'shadow rounded-5 w-50'}>
-                    <h1 className="title text-success text-center">{modalTitle}</h1>
-                    <form className={'d-grid gap-2'}>
-                        <br/>
-                        <label className={'w-50 d-grid mx-auto gap-2'}>
-                            <input value={id} type="text" hidden/>
-                            <input placeholder={'title'} value={title} className={'form-control'} type="text"
+            <Modal isOpen={modal} toggle={toggle}>
+                <ModalHeader toggle={toggle}>{modalTitle}</ModalHeader>
+                <ModalBody>
+                    <label className={'w-50 d-grid mx-auto gap-2'}>
+                        <input value={id} type="text" hidden/>
+                        <div className="inp-gr">
+                            <i className={'text-danger ' + (titleErr === '' ? ' d-none' : '')}>{titleErr}</i>
+                            <input placeholder={'nomi'} value={title} className={'form-control'} type="text"
                                    onChange={setTitleValue}/>
-                            <input placeholder={'author'} value={author} className={'form-control'} type="text"
-                                   onChange={setAuthorValue}/>
-                        </label>
-                        <br/>
-                        <div className="actions d-flex justify-content-center gap-5">
-                            <Button onClick={save} color={'success'} className={'save-btn'}>Save</Button>
-                            <Button onClick={closeModal} type={'button'} color={'danger'}
-                                    className={'cls-btn'}>Close</Button>
                         </div>
-                    </form>
-                </Container>
-            </div>
+                        <div className="inp-gr">
+                            <i className={'text-danger' + (authorErr === '' ? ' d-none' : '')}>{authorErr}</i>
+                            <input placeholder={'muallif'} value={author} className={'form-control'} type="text"
+                                   onChange={setAuthorValue}/>
+                        </div>
+                    </label>
+                </ModalBody>
+                <ModalFooter>
+                    <br/>
+                    <div className="actions d-flex justify-content-center mx-auto gap-5">
+                        <Button onClick={save} color={'primary'} className={'save-btn'}>Save</Button>
+                        <Button onClick={toggle} color={'danger'}
+                                className={'cls-btn'}>Close</Button>
+                    </div>
+                </ModalFooter>
+            </Modal>
+
 
             <div className={'p-5 w-100'}>
-                <Button color={'success'} onClick={showAddModal}
+                <Button color={'info'} onClick={showAddModal}
                         className={'save-btn my-2 shadow-5-strong'}>Add
                     Book</Button>
-                <Table className={'table table-hover table-striped'}>
+                <Table className={'table bg-light table-hover table-striped text-dark'}>
                     <thead>
                     <tr>
                         <th>Id / Index</th>
-                        <th>Title</th>
-                        <th>Activity</th>
-                        <th>Change Content</th>
-                        <th>Actions</th>
+                        <th>Nomi</th>
+                        <th>Aktivligi</th>
+                        <th>Bo'lim va Testlar</th>
+                        <th>Amallar</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -142,9 +209,9 @@ function Book() {
                             </div>
                         </td>
                         <td>
-                            <Col className={'d-flex justify-content-start gap-5'}>
-                                <Link to={`/section/by-book-id/${item.id}`}>Sections</Link>
-                                <Link to={`/quiz/by-book-id/${item.id}`}>Quiz</Link>
+                            <Col className={'d-flex  justify-content-start gap-5'}>
+                                <Link className={'border-bottom'} to={`/section/by-book-id/${item.id}`}>Sections</Link>
+                                <Link className={'border-bottom'} to={`/quiz/by-book-id/${item.id}`}>Quiz</Link>
 
                             </Col>
                         </td>

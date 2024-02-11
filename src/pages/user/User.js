@@ -35,6 +35,7 @@ function User() {
                         <th>Teacher name</th>
                         <th>School</th>
                         <th>Class number</th>
+                        <th>Address</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -46,6 +47,7 @@ function User() {
                         <td>{item.teacherName}</td>
                         <td>{item.school}</td>
                         <td>{item.classNumber}</td>
+                        <td>{item.address.city + ', ' + item.address.region.name}</td>
                     </tr>)}
                     </tbody>
                 </Table>

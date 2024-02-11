@@ -18,19 +18,19 @@ function NavBar(props) {
     }
 
     return (
-        <div>
+        <div className={'my-navbar'}>
             <header
-                className={'shadow bg-gradient px-5 w-100 border d-flex justify-content-between align-items-center'}>
+                className={'shadow px-5 w-100 d-flex justify-content-between align-items-center'}>
                 <div className="logo d-flex justify-content-start  align-items-center gap-3">
-                    <img src={require("./book.png")} alt="logo"/>
-                    <h2 className={'text-success'}>{props.title}</h2>
+                    <img src={require("./book2.png")} alt="logo"/>
+                    <h2 className={'text-white'}>{props.title}</h2>
                 </div>
                 <div className="info d-flex gap-2">
                     <Button color={'primary'}
                             onClick={logout}>Logout</Button>
                 </div>
             </header>
-            <menu className={'p-0 m-0 position-fixed bg-light shadow '}>
+            <menu className={'p-0 m-0 position-fixed shadow'}>
                 <div className="menu-open p-2 text-end">
                     <div className='menu-icon ' onClick={() => {
                         let menu = document.querySelector('menu')
