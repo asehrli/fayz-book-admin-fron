@@ -1,12 +1,21 @@
 import React, {useEffect, useState} from 'react';
-import {Link, useLocation} from "react-router-dom";
+import {Link, useLocation, useNavigate} from "react-router-dom";
 import NavBar from "../../components/NavBar";
 import {Container, Table} from "reactstrap";
 import {GET} from "../api/API";
 import './User.css'
+import {toast} from "react-toastify";
 
 
 function User() {
+
+
+    const navigate = useNavigate()
+    const navigateLoginIfForbidden = (err) => {
+        if (err.response.status === 403) {
+            navigate('/login')
+        }
+    }
 
     const location = useLocation();
     const userId = location.pathname.substring(location.pathname.lastIndexOf('/') + 1)
@@ -18,6 +27,12 @@ function User() {
     const showAll = () => {
         GET('/users/' + userId).then(res => {
             setUser(res.data)
+        }).catch(err => {
+            navigateLoginIfForbidden(err)
+            if (err.response.status === 400)
+                toast(err.response.data.errors)
+            else
+                toast(err.message)
         })
     }
 

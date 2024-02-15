@@ -9,6 +9,14 @@ import 'react-toastify/dist/ReactToastify.css';
 
 
 function StoryUnscored() {
+
+    const navigate = useNavigate()
+    const navigateLoginIfForbidden = (err) => {
+        if (err.response.status === 403) {
+            navigate('/login')
+        }
+    }
+
     const [stories, setStories] = useState()
 
     const navigatator = useNavigate()
@@ -27,7 +35,13 @@ function StoryUnscored() {
             .then(res => {
                 setStories(res.data)
             })
-            .catch(err => toast(err.message))
+            .catch(err => {
+                navigateLoginIfForbidden(err)
+                if (err.response.status === 400)
+                    toast(err.response.data.errors)
+                else
+                    toast(err.message)
+            })
     }
 
     const giveBall = (storyId) => {
@@ -36,7 +50,13 @@ function StoryUnscored() {
                 .then(res => {
                     setScore(-1)
                     showAll()
-                }).catch(err => toast(err.message))
+                }).catch(err => {
+                navigateLoginIfForbidden(err)
+                if (err.response.status === 400)
+                    toast(err.response.data.errors)
+                else
+                    toast(err.message)
+            })
         }
     }
 
@@ -77,7 +97,8 @@ function StoryUnscored() {
                     {stories?.map((story, index) => <tr>
                         <td>{index + 1}</td>
                         <td>
-                            <Link to={'/users/' + story.userDTO.chatId}>{story.userDTO.firstName} {story.userDTO.lastName}</Link>
+                            <Link
+                                to={'/users/' + story.userDTO.chatId}>{story.userDTO.firstName} {story.userDTO.lastName}</Link>
                         </td>
                         {/*<td>{story.userDTO.phoneNumber}</td>*/}
                         {/*<td>{story.sectionDTO.book.title}</td>*/}

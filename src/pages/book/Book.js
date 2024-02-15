@@ -21,10 +21,7 @@ function Book() {
     const [authorErr, setAuthorErr] = useState('')
     const [id, setId] = useState(-1)
     const [modalTitle, setModalTitle] = useState('Add Book')
-    const [dNone, setDNone] = useState('d-none')
     const navigate = useNavigate();
-
-    const notify = () => toast("Wow so easy!");
 
     // functions
     const setTitleValue = (e) => {
@@ -39,7 +36,6 @@ function Book() {
         setTitle('')
         setAuthor('')
         setModalTitle('Kitob qo\'shish')
-        setDNone('')
         setId(-1)
         setTitleErr('')
         setAuthorErr('')
@@ -53,7 +49,11 @@ function Book() {
             setItems(res.data)
         }).catch(err => {
             navigateLoginIfForbidden(err)
-            toast(err.message)
+
+            if (err.response.status === 400)
+                toast(err.response.data.errors)
+            else
+                toast(err.message)
         })
     }
 
@@ -72,19 +72,10 @@ function Book() {
             }).catch(err => {
                 navigateLoginIfForbidden(err)
 
-                if (err.response.status === 400) {
-                    for (let myErr of err.response.data.errors) {
-                        console.log(myErr)
-                        if (myErr.field === 'author') {
-                            setAuthorErr(myErr.msg)
-                        }
-                        if (myErr.field === 'title') {
-                            setTitleErr(myErr.msg)
-                        }
-                    }
-                } else {
+                if (err.response.status === 400)
+                    toast(err.response.data.errors)
+                else
                     toast(err.message)
-                }
             })
         } else {
             edit()
@@ -103,19 +94,10 @@ function Book() {
         }).catch(err => {
             navigateLoginIfForbidden(err)
 
-            if (err.response.status === 400) {
-                for (let myErr of err.response.data.errors) {
-                    console.log(myErr)
-                    if (myErr.field === 'author') {
-                        setAuthorErr(myErr.msg)
-                    }
-                    if (myErr.field === 'title') {
-                        setTitleErr(myErr.msg)
-                    }
-                }
-            } else {
+            if (err.response.status === 400)
+                toast(err.response.data.errors)
+            else
                 toast(err.message)
-            }
         })
     }
 
@@ -127,7 +109,10 @@ function Book() {
             })
             .catch(err => {
                 navigateLoginIfForbidden(err)
-                toast(err.message)
+                if (err.response.status === 400)
+                    toast(err.response.data.errors)
+                else
+                    toast(err.message)
             })
     }
 
@@ -136,7 +121,6 @@ function Book() {
         setAuthor(item.title.substring(item.title.indexOf('(') + 1, item.title.lastIndexOf(')')))
         setModalTitle(`Kitobni tahrirlash`)
         setId(item.id)
-        setDNone('')
         toggle()
     };
 
@@ -145,7 +129,10 @@ function Book() {
             .then(res => showAll())
             .catch(err => {
                 navigateLoginIfForbidden(err)
-                toast(err.response.data.errors[0].msg)
+                if (err.response.status === 400)
+                    toast(err.response.data.errors)
+                else
+                    toast(err.message)
             })
     }
 

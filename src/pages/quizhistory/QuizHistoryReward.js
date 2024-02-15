@@ -3,13 +3,20 @@ import NavBar from "../../components/NavBar";
 import {Button, Container} from "reactstrap";
 import './QuizHistory.css'
 import {GET} from "../api/API";
-import {Link} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import {ToastContainer, toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 
-
 function QuizHistoryReward() {
+
+    const navigate = useNavigate()
+    const navigateLoginIfForbidden = (err) => {
+        if (err.response.status === 403) {
+            navigate('/login')
+        }
+    }
+
     const [quizHistories, setQuizHistories] = useState([])
 
     useEffect(() => {
@@ -20,7 +27,14 @@ function QuizHistoryReward() {
         GET("/quiz-history?rewarded=true")
             .then(res => {
                 setQuizHistories(res.data)
-            }).catch(err => toast(err.message))
+            })
+            .catch(err => {
+                navigateLoginIfForbidden(err)
+                if (err.response.status === 400)
+                    toast(err.response.data.errors)
+                else
+                    toast(err.message)
+            })
     }
 
     return (
@@ -44,7 +58,8 @@ function QuizHistoryReward() {
                     {quizHistories.map((item, index) => <tr>
                         <td>{index + 1}</td>
                         <td>
-                            <Link to={'/users/' + item.userDTO.chatId}>{item.userDTO.firstName} {item.userDTO.lastName}</Link>
+                            <Link
+                                to={'/users/' + item.userDTO.chatId}>{item.userDTO.firstName} {item.userDTO.lastName}</Link>
                         </td>
                         <td>{item.bookDTO.title.length > 36 ? item.bookDTO.title.substring(0, 33) + '...' : item.bookDTO.title}</td>
                         <td>{item.correctAnswer}</td>

@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {useLocation} from "react-router-dom";
+import {useLocation, useNavigate} from "react-router-dom";
 import './Section.css'
 import NavBar from "../../components/NavBar";
 import {Button, Container, Table} from "reactstrap";
@@ -8,8 +8,16 @@ import {ToastContainer, toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 
-
 function Section(props) {
+
+
+    const navigate = useNavigate()
+    const navigateLoginIfForbidden = (err) => {
+        if (err.response.status === 403) {
+            navigate('/login')
+        }
+    }
+
     // constants
     const [items, setItems] = useState([])
     const location = useLocation()
@@ -36,10 +44,24 @@ function Section(props) {
     const showAll = () => {
         GET(GET_PATH).then(res => {
             setItems(res.data)
-        }).catch(err => toast(err.message))
+        }).catch(err => {
+                navigateLoginIfForbidden(err)
+                if (err.response.status === 400)
+                    toast(err.response.data.errors)
+                else
+                    toast(err.message)
+            }
+        )
 
         GET('/book/' + bookId).then(res => setBook(res.data))
-            .catch(err => toast(err.message))
+            .catch(err => {
+                    navigateLoginIfForbidden(err)
+                    if (err.response.status === 400)
+                        toast(err.response.data.errors)
+                    else
+                        toast(err.message)
+                }
+            )
     }
 
     const save = () => {
@@ -48,12 +70,26 @@ function Section(props) {
                 items.push(res.data)
                 setItems(items)
                 showAll()
-            }).catch(err => toast(err.message))
+            }).catch(err => {
+                    navigateLoginIfForbidden(err)
+                    if (err.response.status === 400)
+                        toast(err.response.data.errors)
+                    else
+                        toast(err.message)
+                }
+            )
         } else {
             PUT(BASE_PATH + '/' + id, {name: name, bookId: bookId})
                 .then(res => {
                     showAll()
-                }).catch(err => toast(err.message))
+                }).catch(err => {
+                    navigateLoginIfForbidden(err)
+                    if (err.response.status === 400)
+                        toast(err.response.data.errors)
+                    else
+                        toast(err.message)
+                }
+            )
         }
 
         closeModal()
@@ -72,7 +108,14 @@ function Section(props) {
     const remove = (item) => {
         DELETE(BASE_PATH.concat(`/${item.id}`))
             .then(res => showAll())
-            .catch(err => toast(err.message))
+            .catch(err => {
+                    navigateLoginIfForbidden(err)
+                    if (err.response.status === 400)
+                        toast(err.response.data.errors)
+                    else
+                        toast(err.message)
+                }
+            )
     }
 
     return (

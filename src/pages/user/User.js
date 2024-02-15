@@ -1,18 +1,34 @@
 import React, {useEffect, useState} from 'react';
-import {Link} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import NavBar from "../../components/NavBar";
 import {Table} from "reactstrap";
 import {GET} from "../api/API";
+import {toast} from "react-toastify";
 
 
 function User() {
+
+    const navigate = useNavigate()
+    const navigateLoginIfForbidden = (err) => {
+        if (err.response.status === 403) {
+            navigate('/login')
+        }
+    }
+
     // constants
     const [items, setItems] = useState([])
 
     // api
     const showAll = () => {
-        GET('/users').then(res => {
-            setItems(res.data)
+        GET('/users')
+            .then(res => {
+                setItems(res.data)
+            }).catch(err => {
+            navigateLoginIfForbidden(err)
+            if (err.response.status === 400)
+                toast(err.response.data.errors)
+            else
+                toast(err.message)
         })
     }
 
@@ -25,7 +41,7 @@ function User() {
             <NavBar title={'Book Page'}/>
 
             <div className={'p-5 w-100'}>
-                <Table className={'table table-hover table-striped'}>
+                <Table className={'table table-hover table-striped bg-light'}>
                     <thead>
                     <tr>
                         <th>Id / Index</th>

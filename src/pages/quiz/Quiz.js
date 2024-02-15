@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {useLocation} from "react-router-dom";
+import {useLocation, useNavigate} from "react-router-dom";
 import './Quiz.css'
 import NavBar from "../../components/NavBar";
 import {Button, Container, Table} from "reactstrap";
@@ -10,6 +10,13 @@ import 'react-toastify/dist/ReactToastify.css';
 
 
 function Quiz(props) {
+    const navigate = useNavigate()
+    const navigateLoginIfForbidden = (err) => {
+        if (err.response.status === 403) {
+            navigate('/login')
+        }
+    }
+
     // constants
     const [items, setItems] = useState([])
     const location = useLocation()
@@ -55,11 +62,23 @@ function Quiz(props) {
         GET(GET_PATH).then(res => {
             setItems(res.data)
             console.log(res.data)
-        }).catch(err => toast(err.message))
+        }).catch(err => {
+            navigateLoginIfForbidden(err)
+            if (err.response.status === 400)
+                toast(err.response.data.errors)
+            else
+                toast(err.message)
+        })
 
         GET('/book/' + bookId)
             .then(res => setBook(res.data))
-            .catch(err => toast(err.message))
+            .catch(err => {
+                navigateLoginIfForbidden(err)
+                if (err.response.status === 400)
+                    toast(err.response.data.errors)
+                else
+                    toast(err.message)
+            })
     }
 
     const save = () => {
@@ -90,7 +109,13 @@ function Quiz(props) {
                 items.push(res.data)
                 setItems(items)
                 showAll()
-            }).catch(err => toast(err.message))
+            }).catch(err => {
+                navigateLoginIfForbidden(err)
+                if (err.response.status === 400)
+                    toast(err.response.data.errors)
+                else
+                    toast(err.message)
+            })
         } else {
             let putObj = {
                 name: name,
@@ -120,7 +145,13 @@ function Quiz(props) {
             PUT(BASE_PATH + '/' + id, putObj).then(res => {
                 console.log(res)
                 showAll()
-            }).catch(err => toast(err.message))
+            }).catch(err =>{
+                navigateLoginIfForbidden(err)
+                if (err.response.status === 400)
+                    toast(err.response.data.errors)
+                else
+                    toast(err.message)
+            })
         }
 
         closeModal()
@@ -177,7 +208,13 @@ function Quiz(props) {
     const remove = (item) => {
         DELETE(BASE_PATH.concat(`/${item.id}`))
             .then(res => showAll())
-            .catch(err => toast(err.message))
+            .catch(err =>{
+                navigateLoginIfForbidden(err)
+                if (err.response.status === 400)
+                    toast(err.response.data.errors)
+                else
+                    toast(err.message)
+            })
     }
 
     return (

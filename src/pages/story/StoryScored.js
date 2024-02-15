@@ -3,12 +3,20 @@ import NavBar from "../../components/NavBar";
 import {Button, Container} from "reactstrap";
 import {POST, PUT} from "../api/API";
 import './Scored.css'
-import {Link} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import {ToastContainer, toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 
 function StoryScored() {
+
+    const navigate = useNavigate()
+    const navigateLoginIfForbidden = (err) => {
+        if (err.response.status === 403) {
+            navigate('/login')
+        }
+    }
+
     const [stories, setStories] = useState([])
 
     const [score, setScore] = useState(-1)
@@ -23,7 +31,13 @@ function StoryScored() {
                 setStories(res.data)
                 console.log(res.data)
             })
-            .catch(err => toast(err.message))
+            .catch(err => {
+                navigateLoginIfForbidden(err)
+                if (err.response.status === 400)
+                    toast(err.response.data.errors)
+                else
+                    toast(err.message)
+            })
     }
 
     const giveBall = (storyId) => {
@@ -31,7 +45,13 @@ function StoryScored() {
             .then(res => {
                 showAll()
                 console.log(res)
-            }).catch(err => toast(err.message))
+            }).catch(err => {
+            navigateLoginIfForbidden(err)
+            if (err.response.status === 400)
+                toast(err.response.data.errors)
+            else
+                toast(err.message)
+        })
     }
 
     const BASE_PATH = '/story'
@@ -40,8 +60,15 @@ function StoryScored() {
         PUT("/story/unscored/" + id)
             .then(res => {
                 showAll()
-            }).catch(err => toast(err.message))
-    };
+            }).catch(err => {
+            navigateLoginIfForbidden(err)
+            if (err.response.status === 400)
+                toast(err.response.data.errors)
+            else
+                toast(err.message)
+        })
+    }
+
     const closeModal = () => setDNone('d-none')
     const [dNone, setDNone] = useState('d-none')
     const [history, setHistory] = useState('')
@@ -79,7 +106,8 @@ function StoryScored() {
                     {stories?.map((story, index) => <tr>
                         <td>{index + 1}</td>
                         <td>
-                            <Link to={'/users/' + story.userDTO.chatId}>{story.userDTO.firstName} {story.userDTO.lastName}</Link>
+                            <Link
+                                to={'/users/' + story.userDTO.chatId}>{story.userDTO.firstName} {story.userDTO.lastName}</Link>
                         </td>
                         {/*<td>{story.userDTO.phoneNumber}</td>*/}
                         <td>{story.sectionDTO.book.title.length > 36 ? story.sectionDTO.book.title.substring(0, 33) + '...' : story.sectionDTO.book.title}</td>
