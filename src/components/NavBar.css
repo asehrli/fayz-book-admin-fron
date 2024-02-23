@@ -1,76 +1,84 @@
-header {
-    height: 10vh;
-    /*position: fixed;*/
-    top: 0;
-    background-color: rgba(0, 0, 0, 0.5);
-}
+    header {
+        height: 10vh;
+        /*position: fixed;*/
+        top: 0;
+        /*background-color: rgba(180, 180, 180, 0.5);*/
+        box-shadow: 0 0 15px 2px #9f9f9f;
+    }
 
-menu {
-    background-color: rgba(0, 0, 0, .8);
-}
+    menu {
+        background-color: rgb(255, 255, 255);
+    }
 
-header, menu {
-    /*background-image: linear-gradient(45deg, #008a00, #a7ff00, #ffffff);*/
-}
+    header, menu {
+        /*background-image: linear-gradient(45deg, #008a00, #a7ff00, #ffffff);*/
+    }
 
-.logo {
-    height: 100%;
-    width: auto;
-}
+    .logo {
+        height: 100%;
+        width: auto;
+    }
 
-img {
-    height: 100%;
-}
+    img {
+        height: 100%;
+    }
 
-.menu-open {
-    position: relative;
-    height: 3rem;
-    right: -3rem;
-}
+    .menu-open {
+        position: relative;
+        height: 3rem;
+        right: -3rem;
+    }
 
-.menu-icon {
-    position: absolute;
-    right: 4px;
-    padding: 4px;
-}
+    .menu-icon {
+        position: absolute;
+        right: 4px;
+        padding: 4px;
+    }
 
-.line {
-    width: 2rem;
-    height: .3rem;
-    background-color: aqua;
-    margin-bottom: .4rem;
-    border-radius: 1rem;
-    box-shadow: 0 0 15px 2px white;
-}
+    .line {
+        width: 2rem;
+        height: .3rem;
+        background-color: blue;
+        margin-bottom: .4rem;
+        border-radius: 1rem;
+        box-shadow: 0 0 15px 2px #9f9f9f;
+    }
 
-.line1 {
-    transition: .3s ease;
-}
+    .line1 {
+        transition: .3s ease;
+    }
 
-.line2, .line2 {
-    transition: .7s ease;
-}
+    .line2, .line2 {
+        transition: .7s ease;
+    }
 
-.links {
-    transition: 1s ease;
-}
+    .line-cls {
+        background-color: red;
+    }
 
-menu {
-    height: 90vh;
-    width: 15rem;
-    left: -15rem;
-    transition: .4s ease-out;
-    z-index: 5;
-}
+    .links {
+        transition: 1s ease;
+    }
+
+    menu {
+        height: 90vh;
+        width: 15rem;
+        left: -15rem;
+        transition: .4s ease-out;
+        z-index: 5;
+    }
 
 
-menu ul .menu-link {
-    height: 3rem;
-    width: 12rem;
-    padding-left: 1rem;
-    color: white;
-}
+    menu ul .menu-link {
+        height: 3rem;
+        width: 12rem;
+        padding-left: 1rem;
+        color: #008fff;
+    }
 
-menu ul .menu-link:hover {
-    color: deepskyblue;
-}
+    menu ul .menu-link:hover {
+        color: #ffffff;
+        background-color: #007ed5;
+        border-top-right-radius: 10px;
+        border-top-left-radius: 10px;
+    }

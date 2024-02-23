@@ -29,9 +29,11 @@ function QuizHistoryUnReward() {
                 setQuizHistories(res.data)
             }).catch(err => {
             navigateLoginIfForbidden(err)
-            if (err.response.status === 400)
-                toast(err.response.data.errors)
-            else
+            if (err.response.status === 400) {
+                for (const errEl of err.response.data.errors) {
+                    toast(`${errEl.field} ${errEl.msg}`)
+                }
+            } else
                 toast(err.message)
         })
     }
@@ -43,9 +45,11 @@ function QuizHistoryUnReward() {
                 showAll()
             }).catch(err => {
             navigateLoginIfForbidden(err)
-            if (err.response.status === 400)
-                toast(err.response.data.errors)
-            else
+            if (err.response.status === 400) {
+                for (const errEl of err.response.data.errors) {
+                    toast(`${errEl.field} ${errEl.msg}`)
+                }
+            } else
                 toast(err.message)
         })
     }

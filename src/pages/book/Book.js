@@ -72,9 +72,11 @@ function Book() {
             }).catch(err => {
                 navigateLoginIfForbidden(err)
 
-                if (err.response.status === 400)
-                    toast(err.response.data.errors)
-                else
+                if (err.response.status === 400) {
+                    for (const errEl of err.response.data.errors) {
+                        toast(`${errEl.field} ${errEl.msg}`)
+                    }
+                } else
                     toast(err.message)
             })
         } else {
@@ -94,9 +96,11 @@ function Book() {
         }).catch(err => {
             navigateLoginIfForbidden(err)
 
-            if (err.response.status === 400)
-                toast(err.response.data.errors)
-            else
+            if (err.response.status === 400) {
+                for (const errEl of err.response.data.errors) {
+                    toast(`${errEl.field} ${errEl.msg}`)
+                }
+            } else
                 toast(err.message)
         })
     }
@@ -109,9 +113,11 @@ function Book() {
             })
             .catch(err => {
                 navigateLoginIfForbidden(err)
-                if (err.response.status === 400)
-                    toast(err.response.data.errors)
-                else
+                if (err.response.status === 400) {
+                    for (const errEl of err.response.data.errors) {
+                        toast(`${errEl.field} ${errEl.msg}`)
+                    }
+                } else
                     toast(err.message)
             })
     }
@@ -129,9 +135,11 @@ function Book() {
             .then(res => showAll())
             .catch(err => {
                 navigateLoginIfForbidden(err)
-                if (err.response.status === 400)
-                    toast(err.response.data.errors)
-                else
+                if (err.response.status === 400) {
+                    for (const errEl of err.response.data.errors) {
+                        toast(`${errEl.field} ${errEl.msg}`)
+                    }
+                } else
                     toast(err.message)
             })
     }
@@ -148,12 +156,12 @@ function Book() {
                         <input value={id} type="text" hidden/>
                         <div className="inp-gr">
                             <i className={'text-danger ' + (titleErr === '' ? ' d-none' : '')}>{titleErr}</i>
-                            <input placeholder={'nomi'} value={title} className={'form-control'} type="text"
+                            <input required={true} placeholder={'nomi'} value={title} className={'form-control'} type="text"
                                    onChange={setTitleValue}/>
                         </div>
                         <div className="inp-gr">
                             <i className={'text-danger' + (authorErr === '' ? ' d-none' : '')}>{authorErr}</i>
-                            <input placeholder={'muallif'} value={author} className={'form-control'} type="text"
+                            <Input required={true} placeholder={'muallif'} value={author} className={'form-control'} type="text"
                                    onChange={setAuthorValue}/>
                         </div>
                     </label>
@@ -170,10 +178,10 @@ function Book() {
 
 
             <div className={'p-5 w-100'}>
-                <Button color={'info'} onClick={showAddModal}
-                        className={'save-btn my-2 shadow-5-strong'}>Add
+                <Button color={'info'} onClick={showAddModal} className={'save-btn my-2 shadow-5-strong'}>Add
                     Book</Button>
-                <Table className={'table bg-light table-hover table-striped text-dark'}>
+
+                <table className={'table table-hover text-dark'}>
                     <thead>
                     <tr>
                         <th>Id / Index</th>
@@ -189,7 +197,7 @@ function Book() {
                         <td>{item.title}</td>
                         <td>
                             <div className="form-check form-switch">
-                                {<input className="form-check-input shadow"
+                                {<input className="form-check-input"
                                         type="checkbox" checked={item.isActive}
                                         onClick={() => changeActivity(item)}
                                         id="flexSwitchCheckDefault"/>}
@@ -208,7 +216,7 @@ function Book() {
                         </td>
                     </tr>)}
                     </tbody>
-                </Table>
+                </table>
             </div>
         </>
     );

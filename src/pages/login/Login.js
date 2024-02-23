@@ -16,7 +16,6 @@ function Login() {
     const [password, setPassword] = useState('')
 
     const navigate = useNavigate()
-
     const login = () => {
         POST('/api/auth/login', {
             username: username,
@@ -25,7 +24,16 @@ function Login() {
             localStorage.setItem('access-token', res.data.accessToken)
             localStorage.setItem('refresh-token', res.data.refreshToken)
             navigate('/book')
-        }).catch(err => toast(err.message))
+        }).catch(err => {
+            if (err.response.status === 403)
+                toast('Username or Password is wrong!')
+            else if (err.response.status === 400) {
+                for (const errEl of err.response.data.errors) {
+                    toast(`${errEl.field} ${errEl.msg}`)
+                }
+            } else
+                toast(err.message)
+        })
     }
 
     return (

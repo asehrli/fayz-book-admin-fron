@@ -64,9 +64,11 @@ function Quiz(props) {
             console.log(res.data)
         }).catch(err => {
             navigateLoginIfForbidden(err)
-            if (err.response.status === 400)
-                toast(err.response.data.errors)
-            else
+            if (err.response.status === 400) {
+                for (const errEl of err.response.data.errors) {
+                    toast(`${errEl.field} ${errEl.msg}`)
+                }
+            } else
                 toast(err.message)
         })
 
@@ -74,9 +76,11 @@ function Quiz(props) {
             .then(res => setBook(res.data))
             .catch(err => {
                 navigateLoginIfForbidden(err)
-                if (err.response.status === 400)
-                    toast(err.response.data.errors)
-                else
+                if (err.response.status === 400) {
+                    for (const errEl of err.response.data.errors) {
+                        toast(`${errEl.field} ${errEl.msg}`)
+                    }
+                } else
                     toast(err.message)
             })
     }
@@ -111,9 +115,11 @@ function Quiz(props) {
                 showAll()
             }).catch(err => {
                 navigateLoginIfForbidden(err)
-                if (err.response.status === 400)
-                    toast(err.response.data.errors)
-                else
+                if (err.response.status === 400) {
+                    for (const errEl of err.response.data.errors) {
+                        toast(`${errEl.field} ${errEl.msg}`)
+                    }
+                } else
                     toast(err.message)
             })
         } else {
@@ -147,9 +153,11 @@ function Quiz(props) {
                 showAll()
             }).catch(err =>{
                 navigateLoginIfForbidden(err)
-                if (err.response.status === 400)
-                    toast(err.response.data.errors)
-                else
+                if (err.response.status === 400) {
+                    for (const errEl of err.response.data.errors) {
+                        toast(`${errEl.field} ${errEl.msg}`)
+                    }
+                } else
                     toast(err.message)
             })
         }
@@ -210,9 +218,11 @@ function Quiz(props) {
             .then(res => showAll())
             .catch(err =>{
                 navigateLoginIfForbidden(err)
-                if (err.response.status === 400)
-                    toast(err.response.data.errors)
-                else
+                if (err.response.status === 400) {
+                    for (const errEl of err.response.data.errors) {
+                        toast(`${errEl.field} ${errEl.msg}`)
+                    }
+                } else
                     toast(err.message)
             })
     }
