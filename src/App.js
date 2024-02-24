@@ -1,6 +1,5 @@
 import Login from "./pages/login/Login";
 import {BrowserRouter, Route, Routes} from "react-router-dom";
-import Home from "./Home";
 import Book from "./pages/book/Book";
 import Section from "./pages/section/Section";
 import Quiz from "./pages/quiz/Quiz";
